@@ -1,3 +1,5 @@
+import { AgeAnalysisLoader } from "./AgeAnalysis";
+import type { AgeRange } from "../lib/types";
 import { useMemo, useState } from "react";
 import { GROUP_LABEL } from "../lib/catalog";
 import { addDays, fmt, formatDate, monthLabel, today } from "../lib/dates";
@@ -15,7 +17,7 @@ const LEVEL: Record<Level, { card: string; value: string; chip: string; label: s
   none: { card: "border-[#cad8e3] bg-white", value: "text-slate-800", chip: "bg-slate-200 text-slate-600", label: "Sin datos" },
 };
 
-export function IndicatorsPanel({ est, data }: { est: Establishment; data: StockData }) {
+export function IndicatorsPanel({ est, data, ageRanges }: { est: Establishment; data: StockData; ageRanges: AgeRange[] }) {
   const day = today();
   const [preset, setPreset] = useState<(typeof PERIODS)[number]["id"]>("12m");
   const [custom, setCustom] = useState({ from: addDays(day, -90), to: day });
@@ -49,6 +51,8 @@ export function IndicatorsPanel({ est, data }: { est: Establishment; data: Stock
       <Tile title="Refugo del período" value={`${fmt(r.refugoPct)} %`} lvl="none" info target={`${r.refugo} animales: ${s.exits.venta} ventas, ${s.exits.muerte} muertes, ${s.exits.descarte} descartes`} detail={`Anualizado: ${fmt(r.refugoAnnual)} % · período anterior: ${fmt(r.prevRefugoPct)} %`} />
       <Tile title="Balance del período" value={`${s.balance > 0 ? "+" : ""}${s.balance}`} lvl="none" info target={`Entraron ${s.entries.nacimiento + s.entries.compra + s.entries.ingreso + s.transfersIn} · salieron ${s.exits.venta + s.exits.muerte + s.exits.descarte + s.exits.egreso + s.transfersOut}`} detail={`${s.entries.nacimiento} nacimientos · ${s.entries.compra} compras · ajustes +${s.entries.ingreso}/−${s.exits.egreso}`} />
     </Group>
+
+    {!catId ? <AgeAnalysisLoader establishmentId={est.id} ranges={ageRanges} data={data} stock={r.stock} /> : null}
 
     {!catId && r.cows.has ? <Group title="Vacas (últimos 12 meses)">
       <Tile title="Refugo anual de vacas" value={`${fmt(r.cows.refugoYear)} %`} lvl={level(r.cows.refugoYear, 25, 30, "max")} target="Meta 20–25 % (4 a 5 lactancias por vaca)" detail="Ventas + muertes + descartes de vacas sobre el promedio de vacas" />

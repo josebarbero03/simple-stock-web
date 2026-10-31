@@ -174,11 +174,11 @@ function EstablishmentView({ est, role, tab, go, userId, responsable, firstName,
       {active === "stock" ? <StockPanel est={est} data={data} role={role} responsable={responsable} save={stock.save} reload={stock.reload} loading={stock.loading} onGoMovements={() => go("movimientos")} />
         : active === "movimientos" ? <MovementsPanel est={est} data={data} role={role} responsable={responsable} save={stock.save} pendingIds={new Set(stock.pending.map((m) => m.id))} />
         : active === "conteo" ? <CountPanel est={est} data={data} responsable={responsable} save={stock.save} />
-        : active === "indicadores" ? <IndicatorsPanel est={est} data={data} />
-        : active === "animales" ? <AnimalsPanel est={est} data={data} userId={userId} responsable={responsable} save={stock.save} />
+        : active === "indicadores" ? <IndicatorsPanel est={est} data={data} ageRanges={stock.ageRanges} />
+        : active === "animales" ? <AnimalsPanel est={est} data={data} ageRanges={stock.ageRanges} userId={userId} responsable={responsable} save={stock.save} />
         : active === "equipo" ? <TeamPanel est={est} userId={userId} onUseAsOperator={onUseAsOperator} />
         : active === "config" ? <SettingsPanel est={est} data={data} ageRanges={stock.ageRanges} role={role} onSaved={async () => { await reloadEsts(); await stock.reload(); }} />
-        : active === "exportar" ? <ExportPanel est={est} data={data} />
+        : active === "exportar" ? <ExportPanel est={est} data={data} ageRanges={stock.ageRanges} />
         : active === "carga" ? <BulkMovements est={est} data={data} responsable={responsable} save={stock.save} />
         : <EstablishmentsPanel ests={ests} roles={roles} email="" onChanged={reloadEsts} onOpen={(id) => { setEstId(id); go("stock"); }} />}
     </main>

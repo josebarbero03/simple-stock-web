@@ -7,7 +7,9 @@ import { loadAnimals, upsertAnimal, upsertAnimalEvent } from "../lib/api";
 import { buildMovement } from "../lib/movements";
 import type { StockData } from "../lib/stock";
 import { errorText } from "../lib/supabase";
-import type { Animal, AnimalEvent, Establishment, MovementType, Sex } from "../lib/types";
+import type { AgeRange, Animal, AnimalEvent, Establishment, MovementType, Sex } from "../lib/types";
+import { activeRanges, ageDays, inRange } from "../lib/ages";
+import { AgeAnalysis } from "./AgeAnalysis";
 import { Button, Card, Empty, Field, Input, Modal, Select, Textarea, toast } from "./ui";
 
 export const STATUS_LABEL: Record<string, string> = { active: "Activo", sold: "Vendido", dead: "Muerto", discarded: "Descartado" };
@@ -16,12 +18,14 @@ const STATUS_FOR: Record<string, string> = { Venta: "sold", Muerte: "dead", Desc
 function ageText(birth: string) {
   const d = Math.max(0, daysBetween(birth, today()));
   if (d < 60) return `${d} días`;
-  if (d < 730) return `${(d / 30.44).toFixed(1).replace(".", ",")} meses`;
-  return `${(d / 365.25).toFixed(1).replace(".", ",")} años`;
+  if (d < 730) return `${d} días · ${(d / 30.44).toFixed(1).replace(".", ",")} meses`;
+  return `${d} días · ${(d / 365.25).toFixed(1).replace(".", ",")} años`;
 }
 
 /** Fichas individuales. Como en la app Android, la ficha no cambia el stock salvo que se elija registrar el movimiento. */
-export function AnimalsPanel({ est, data, userId, responsable, save }: { est: Establishment; data: StockData; userId: string; responsable: string; save: SaveMovements }) {
+export function AnimalsPanel({ est, data, ageRanges, userId, responsable, save }: { est: Establishment; data: StockData; ageRanges: AgeRange[]; userId: string; responsable: string; save: SaveMovements }) {
+  const [ageIdx, setAgeIdx] = useState<number | null>(null);
+  const ranges = useMemo(() => activeRanges(ageRanges), [ageRanges]);
   const [animals, setAnimals] = useState<Animal[] | null>(null);
   const [events, setEvents] = useState<AnimalEvent[]>([]);
   const [query, setQuery] = useState("");
@@ -38,8 +42,9 @@ export function AnimalsPanel({ est, data, userId, responsable, save }: { est: Es
 
   const list = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return (animals ?? []).filter((a) => (status === "todos" || a.status === status) && (!q || [a.tag, a.electronic_tag, a.lot, a.mother_tag].some((v) => v?.toLowerCase().includes(q))));
-  }, [animals, query, status]);
+    const r = ageIdx === null ? null : ranges[ageIdx];
+    return (animals ?? []).filter((a) => (status === "todos" || a.status === status) && (!r || inRange(ageDays(a, today()), r)) && (!q || [a.tag, a.electronic_tag, a.lot, a.mother_tag].some((v) => v?.toLowerCase().includes(q))));
+  }, [animals, query, status, ageIdx, ranges]);
   const open = animals?.find((a) => a.id === openId) ?? null;
 
   return <div className="space-y-4">
@@ -47,7 +52,9 @@ export function AnimalsPanel({ est, data, userId, responsable, save }: { est: Es
       <div><h1 className="text-2xl font-bold text-brand">Animales</h1><p className="text-sm text-slate-600">Fichas individuales · no modifican el stock general salvo que lo elijas</p></div>
       <Button onClick={() => setCreating(true)}><Plus />Nueva ficha</Button>
     </div>
+    <AgeAnalysis animals={animals} ranges={ageRanges} data={data} selected={ageIdx} onSelect={(i) => { setAgeIdx(i); if (i !== null) setStatus("active"); }} />
     <Card className="space-y-3 !p-3">
+      {ageIdx !== null && ranges[ageIdx] ? <p className="flex items-center justify-between gap-2 rounded-xl bg-[#eaf2f8] px-3 py-2 text-sm font-bold text-brand">Rango: {ranges[ageIdx].label}<button onClick={() => setAgeIdx(null)} className="text-xs underline">Quitar filtro</button></p> : null}
       <div className="relative"><Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" /><Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Caravana, electrónica, lote o madre" className="!mt-0 pl-9" aria-label="Buscar" /></div>
       <div className="flex flex-wrap gap-1.5">{[["active", "Activos"], ["sold", "Vendidos"], ["dead", "Muertos"], ["discarded", "Descartados"], ["todos", "Todos"]].map(([id, label]) => <button key={id} onClick={() => setStatus(id)} className={`rounded-full px-3 py-1.5 text-sm font-bold ${status === id ? "bg-brand text-white" : "bg-slate-100 text-slate-600"}`}>{label} ({(animals ?? []).filter((a) => id === "todos" || a.status === id).length})</button>)}</div>
     </Card>

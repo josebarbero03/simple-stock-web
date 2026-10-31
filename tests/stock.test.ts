@@ -91,3 +91,18 @@ describe("indicadores", () => {
     expect(t[2]).toMatchObject({ exits: 2, stock: 154 });
   });
 });
+
+import { ageBuckets } from "../src/lib/ages";
+import type { Animal } from "../src/lib/types";
+describe("animales por días de nacido", () => {
+  const mk = (id: string, birth: string | null, sexo: "H" | "M", status = "active"): Animal => ({ id, establishment_id: "e", tag: id, electronic_tag: null, sexo, birth_date: birth, mother_tag: null, father_tag: null, origin: null, current_category_id: "c", lot: null, status, birth_weight: null, notes: null, created_by: null, updated_at: "", deleted_at: null } as unknown as Animal);
+  it("cuenta por rango con los rangos por defecto", () => {
+    const r = ageBuckets([mk("a", "2026-10-31", "H"), mk("b", "2026-09-01", "M"), mk("c", "2026-09-01", "H"), mk("d", "2025-01-01", "H"), mk("e", "2026-10-01", "H", "sold"), mk("f", null, "M")], [], "2026-10-31");
+    expect(r.buckets.map((b) => b.total)).toEqual([3, 0, 0, 0, 1]);
+    expect(r.buckets[0].h).toBe(2); expect(r.active).toBe(5); expect(r.withoutDate).toBe(1); expect(r.outside).toBe(1);
+  });
+  it("usa los rangos del establecimiento", () => {
+    const r = ageBuckets([mk("a", "2026-10-21", "H")], [{ label: "Hasta 15", min_days: 0, max_days: 15, sort_order: 1, active: true }], "2026-10-31");
+    expect(r.buckets).toHaveLength(1); expect(r.buckets[0].total).toBe(1);
+  });
+});

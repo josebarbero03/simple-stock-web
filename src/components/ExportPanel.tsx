@@ -3,7 +3,9 @@ import { FileSpreadsheet, Printer } from "lucide-react";
 import { GROUP_LABEL, TYPE_PLAIN } from "../lib/catalog";
 import { addDays, fmt, formatDate, today } from "../lib/dates";
 import { indicators, stockTable, type StockData } from "../lib/stock";
-import type { Establishment } from "../lib/types";
+import type { AgeRange, Establishment } from "../lib/types";
+import { ageBuckets } from "../lib/ages";
+import { loadAnimals } from "../lib/api";
 import { Button, Card, Input } from "./ui";
 
 const csvCell = (v: unknown) => { const s = v === null || v === undefined ? "" : String(v); return /[;"\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
@@ -14,7 +16,7 @@ function download(name: string, rows: unknown[][]) {
 }
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
 
-export function ExportPanel({ est, data }: { est: Establishment; data: StockData }) {
+export function ExportPanel({ est, data, ageRanges }: { est: Establishment; data: StockData; ageRanges: AgeRange[] }) {
   const day = today();
   const [from, setFrom] = useState(addDays(day, -29) < est.inventory_date ? est.inventory_date : addDays(day, -29));
   const [to, setTo] = useState(day);
@@ -31,19 +33,26 @@ export function ExportPanel({ est, data }: { est: Establishment; data: StockData
       ["Refugo anual de vacas %", fmt(r.cows.refugoYear)], ["Mortalidad anual de vacas %", fmt(r.cows.deathYear)], ["VO/VT %", fmt(r.cows.voVt)], ["Vaquillonas cada 100 vacas", fmt(r.cows.heifersPer100, 0)]]);
   };
 
-  function print() {
+  async function print() {
+    const w = window.open("", "_blank");
+    if (!w) return;
+    w.document.write("Preparando informe…");
+    let ages = "";
+    try {
+      const ab = ageBuckets((await loadAnimals(est.id)).animals, ageRanges, day);
+      ages = `<h2>Animales por días de nacido (${ab.active} con ficha)</h2><table><tr><th>Rango</th><th class="n">Hembras</th><th class="n">Machos</th><th class="n">Total</th></tr>${ab.buckets.map((b) => `<tr><td>${esc(b.range.label)}</td><td class="n">${b.h}</td><td class="n">${b.m}</td><td class="n"><b>${b.total}</b></td></tr>`).join("")}</table>`;
+    } catch { ages = ""; }
+    w.document.open();
     const rows = stockTable(data, day);
     const r = indicators(data, from, to);
     const moves = data.movements.filter((m) => m.fecha >= from && m.fecha <= to).sort((a, b) => a.fecha.localeCompare(b.fecha));
-    const w = window.open("", "_blank");
-    if (!w) return;
     w.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Informe ${esc(est.name)}</title><style>
       body{font-family:system-ui,sans-serif;color:#10231d;margin:24px}h1{margin:0}h2{margin:24px 0 8px;font-size:16px}table{border-collapse:collapse;width:100%;font-size:12px}
       td,th{border:1px solid #cad8e3;padding:4px 6px;text-align:left}th{background:#e8f2ed}.n{text-align:right}.muted{color:#61706a;font-size:12px}
       .kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.kpi div{border:1px solid #cad8e3;border-radius:8px;padding:8px}.kpi b{display:block;font-size:20px}</style></head><body>
       <h1>SInPLe Stock · ${esc(est.name)}</h1><p class="muted">${est.producer_name ? esc(est.producer_name) + " · " : ""}Stock al ${formatDate(day)} · Movimientos e indicadores del ${formatDate(from)} al ${formatDate(to)}</p>
       <div class="kpi"><div>Stock actual<b>${r.stock}</b></div><div>Refugo del período<b>${fmt(r.refugoPct)} %</b></div><div>Refugo anual de vacas<b>${fmt(r.cows.refugoYear)} %</b></div><div>VO/VT<b>${fmt(r.cows.voVt, 0)} %</b></div></div>
-      <h2>Stock por categoría</h2><table><tr><th>Categoría</th><th class="n">Hembras</th><th class="n">Machos</th><th class="n">Total</th></tr>${rows.map((x) => `<tr><td>${esc(x.category.name)}</td><td class="n">${x.h}</td><td class="n">${x.m}</td><td class="n"><b>${x.total}</b></td></tr>`).join("")}</table>
+      <h2>Stock por categoría</h2><table><tr><th>Categoría</th><th class="n">Hembras</th><th class="n">Machos</th><th class="n">Total</th></tr>${rows.map((x) => `<tr><td>${esc(x.category.name)}</td><td class="n">${x.h}</td><td class="n">${x.m}</td><td class="n"><b>${x.total}</b></td></tr>`).join("")}</table>${ages}
       <h2>Movimientos (${moves.length})</h2><table><tr><th>Fecha</th><th>Tipo</th><th>Origen</th><th>Destino</th><th>Sexo</th><th class="n">Cant.</th><th>Causa</th><th>Responsable</th></tr>${moves.map((m) => `<tr><td>${formatDate(m.fecha)}</td><td>${esc(TYPE_PLAIN[m.tipo])}</td><td>${esc(m.origen ?? "")}</td><td>${esc(m.destino ?? "")}</td><td>${m.sexo}</td><td class="n">${m.cantidad}</td><td>${esc(m.causa ?? "")}</td><td>${esc(m.responsable ?? "")}</td></tr>`).join("")}</table>
       <script>window.onload=()=>window.print()</script></body></html>`);
     w.document.close();
@@ -59,7 +68,7 @@ export function ExportPanel({ est, data }: { est: Establishment; data: StockData
       <Button variant="secondary" onClick={exportStock} className="!h-14"><FileSpreadsheet />Stock actual (Excel)</Button>
       <Button variant="secondary" onClick={exportMoves} className="!h-14"><FileSpreadsheet />Movimientos del período (Excel)</Button>
       <Button variant="secondary" onClick={exportIndicators} className="!h-14"><FileSpreadsheet />Indicadores del período (Excel)</Button>
-      <Button onClick={print} className="!h-14"><Printer />Informe para imprimir / PDF</Button>
+      <Button onClick={() => void print()} className="!h-14"><Printer />Informe para imprimir / PDF</Button>
     </div>
     <p className="text-sm text-slate-500">Los archivos se abren con Excel. Para el PDF, en la ventana de impresión elegí “Guardar como PDF”.</p>
   </div>;
