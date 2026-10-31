@@ -39,8 +39,8 @@ export function ExportPanel({ est, data }: { est: Establishment; data: StockData
     if (!w) return;
     w.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Informe ${esc(est.name)}</title><style>
       body{font-family:system-ui,sans-serif;color:#10231d;margin:24px}h1{margin:0}h2{margin:24px 0 8px;font-size:16px}table{border-collapse:collapse;width:100%;font-size:12px}
-      td,th{border:1px solid #cedad5;padding:4px 6px;text-align:left}th{background:#e8f2ed}.n{text-align:right}.muted{color:#61706a;font-size:12px}
-      .kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.kpi div{border:1px solid #cedad5;border-radius:8px;padding:8px}.kpi b{display:block;font-size:20px}</style></head><body>
+      td,th{border:1px solid #cad8e3;padding:4px 6px;text-align:left}th{background:#e8f2ed}.n{text-align:right}.muted{color:#61706a;font-size:12px}
+      .kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.kpi div{border:1px solid #cad8e3;border-radius:8px;padding:8px}.kpi b{display:block;font-size:20px}</style></head><body>
       <h1>SInPLe Stock · ${esc(est.name)}</h1><p class="muted">${est.producer_name ? esc(est.producer_name) + " · " : ""}Stock al ${formatDate(day)} · Movimientos e indicadores del ${formatDate(from)} al ${formatDate(to)}</p>
       <div class="kpi"><div>Stock actual<b>${r.stock}</b></div><div>Refugo del período<b>${fmt(r.refugoPct)} %</b></div><div>Refugo anual de vacas<b>${fmt(r.cows.refugoYear)} %</b></div><div>VO/VT<b>${fmt(r.cows.voVt, 0)} %</b></div></div>
       <h2>Stock por categoría</h2><table><tr><th>Categoría</th><th class="n">Hembras</th><th class="n">Machos</th><th class="n">Total</th></tr>${rows.map((x) => `<tr><td>${esc(x.category.name)}</td><td class="n">${x.h}</td><td class="n">${x.m}</td><td class="n"><b>${x.total}</b></td></tr>`).join("")}</table>
@@ -50,7 +50,7 @@ export function ExportPanel({ est, data }: { est: Establishment; data: StockData
   }
 
   return <div className="space-y-4">
-    <div><h1 className="text-2xl font-black">Exportar</h1><p className="text-sm text-slate-600">Planillas para Excel e informe para imprimir o guardar en PDF</p></div>
+    <div><h1 className="text-2xl font-bold text-brand">Reportes</h1><p className="text-sm text-slate-600">Planillas para Excel e informe para imprimir o guardar en PDF</p></div>
     <Card className="flex flex-wrap items-center gap-3 !p-3"><span className="text-sm font-bold">Período</span>
       <Input type="date" value={from} min={est.inventory_date} max={to} onChange={(e) => e.target.value && setFrom(e.target.value)} className="!mt-0 w-auto" aria-label="Desde" />
       <Input type="date" value={to} min={from} max={day} onChange={(e) => e.target.value && setTo(e.target.value)} className="!mt-0 w-auto" aria-label="Hasta" />

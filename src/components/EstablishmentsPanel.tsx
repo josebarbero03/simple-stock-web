@@ -11,7 +11,7 @@ export function EstablishmentsPanel({ ests, roles, email, onChanged, onOpen }: {
   const [creating, setCreating] = useState(false);
   return <div className="space-y-4">
     <div className="flex flex-wrap items-end justify-between gap-3">
-      <div><h1 className="text-2xl font-black">Establecimientos</h1><p className="text-sm text-slate-600">Cada establecimiento tiene su propio stock y su equipo.</p></div>
+      <div><h1 className="text-2xl font-bold text-brand">Establecimientos</h1><p className="text-sm text-slate-600">Cada establecimiento tiene su propio stock y su equipo.</p></div>
       {ests.length ? <Button onClick={() => setCreating(true)}><Plus />Nuevo establecimiento</Button> : null}
     </div>
     {!ests.length ? <Empty icon={<Building2 />} title="Todavía no tenés establecimientos" text={`Creá el primero con sus categorías y el stock inicial.${email ? ` Si trabajás en el de otra persona, pedile que te sume desde “Equipo” con tu email ${email}.` : ""}`} action={<Button onClick={() => setCreating(true)}><Plus />Crear establecimiento</Button>} />

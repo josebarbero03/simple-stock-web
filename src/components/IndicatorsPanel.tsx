@@ -12,7 +12,7 @@ const LEVEL: Record<Level, { card: string; value: string; chip: string; label: s
   ok: { card: "border-emerald-200 bg-emerald-50/60", value: "text-emerald-700", chip: "bg-emerald-600 text-white", label: "Bien" },
   warn: { card: "border-amber-200 bg-amber-50/70", value: "text-amber-700", chip: "bg-amber-400 text-amber-950", label: "Atención" },
   bad: { card: "border-rose-200 bg-rose-50/70", value: "text-rose-700", chip: "bg-rose-600 text-white", label: "Revisar" },
-  none: { card: "border-[#dce5e1] bg-white", value: "text-slate-800", chip: "bg-slate-200 text-slate-600", label: "Sin datos" },
+  none: { card: "border-[#cad8e3] bg-white", value: "text-slate-800", chip: "bg-slate-200 text-slate-600", label: "Sin datos" },
 };
 
 export function IndicatorsPanel({ est, data }: { est: Establishment; data: StockData }) {
@@ -32,7 +32,7 @@ export function IndicatorsPanel({ est, data }: { est: Establishment; data: Stock
   const s = r.summary;
 
   return <div className="space-y-4">
-    <div><h1 className="text-2xl font-black">Indicadores</h1><p className="text-sm text-slate-600">{est.name} · {formatDate(range.from)} al {formatDate(range.to)} ({r.days} días)</p></div>
+    <div><h1 className="text-2xl font-bold text-brand">Análisis</h1><p className="text-sm text-slate-600">{est.name} · {formatDate(range.from)} al {formatDate(range.to)} ({r.days} días)</p></div>
     <Card className="space-y-2 !p-3">
       <div className="flex flex-wrap gap-1.5">{PERIODS.map((p) => <button key={p.id} onClick={() => setPreset(p.id)} className={`rounded-full px-3 py-1.5 text-sm font-bold ${preset === p.id ? "bg-brand text-white" : "bg-slate-100 text-slate-600"}`}>{p.label}</button>)}</div>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">

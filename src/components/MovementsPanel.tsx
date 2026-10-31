@@ -41,7 +41,7 @@ export function MovementsPanel({ est, data, role, responsable, save, pendingIds 
 
   return <div className="space-y-4">
     <div className="flex flex-wrap items-end justify-between gap-3">
-      <div><h1 className="text-2xl font-black">Movimientos</h1><p className="text-sm text-slate-600">{est.name}</p></div>
+      <div><h1 className="text-2xl font-bold text-brand">Movimientos</h1><p className="text-sm text-slate-600">{est.name}</p></div>
       {canOperate(role) ? <Button onClick={() => setWizard(true)}><Plus />Nuevo movimiento</Button> : null}
     </div>
     <Card className="space-y-3 !p-3 sm:!p-4">
@@ -57,7 +57,7 @@ export function MovementsPanel({ est, data, role, responsable, save, pendingIds 
     {!list.length ? <Empty icon={<ListOrdered />} title="Sin movimientos" text="No hay movimientos con estos filtros." />
       : byDay.map(([d, items]) => <section key={d}>
         <h2 className="mb-1 text-sm font-black uppercase tracking-wide text-slate-500">{d === day ? "Hoy" : d === addDays(day, -1) ? "Ayer" : formatDate(d)}{d < before ? " · antes del inventario (no cuenta)" : ""}</h2>
-        <ul className="divide-y divide-[#edf2f0] rounded-2xl border border-[#dce5e1] bg-white">{items.map((m) => <li key={m.id} className="flex items-center gap-3 p-3">
+        <ul className="divide-y divide-[#e3ecf2] rounded-2xl border border-[#cad8e3] bg-white">{items.map((m) => <li key={m.id} className="flex items-center gap-3 p-3">
           <span className={`grid size-10 shrink-0 place-items-center rounded-full [&_svg]:size-5 ${TYPE_STYLE[m.tipo].color}`}>{TYPE_STYLE[m.tipo].icon}</span>
           <div className="min-w-0 flex-1">
             <p className="font-black">{TYPE_PLAIN[m.tipo]} <span className="font-semibold text-slate-600">· {describeMovement(m)}</span></p>

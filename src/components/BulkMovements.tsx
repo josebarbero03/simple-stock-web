@@ -38,7 +38,7 @@ export function BulkMovements({ est, data, responsable, save }: { est: Establish
   }
 
   return <div className="space-y-4">
-    <div><h1 className="text-2xl font-black">Carga masiva de movimientos</h1><p className="text-sm text-slate-600">Pegá desde Excel o subí un CSV · {est.name}</p></div>
+    <div><h1 className="text-2xl font-bold text-brand">Carga masiva de movimientos</h1><p className="text-sm text-slate-600">Pegá desde Excel o subí un CSV · {est.name}</p></div>
     <Card className="space-y-3">
       <div className="text-sm text-slate-600"><p>Columnas en este orden:</p><ol className="mt-1 flex flex-wrap gap-1.5">{COLUMNS.map((c, i) => <li key={c} className="rounded-lg bg-slate-100 px-2 py-1 font-semibold text-slate-800">{i + 1}. {c}</li>)}</ol>
         <p className="mt-2">Ventas, muertes y descartes llevan categoría de origen; nacimientos y compras, de destino; los traslados, las dos. Los nombres de categoría tienen que coincidir con los de este establecimiento.</p></div>
@@ -50,7 +50,7 @@ export function BulkMovements({ est, data, responsable, save }: { est: Establish
     </Card>
     {rows.length ? <div>
       <p className="mb-2 flex flex-wrap gap-x-4 text-sm font-bold"><span className="text-brand-dark">{valid.length} listos</span>{rows.length - valid.length ? <span className="text-rose-600">{rows.length - valid.length} con errores (no se cargan)</span> : null}</p>
-      <ul className="max-h-80 overflow-y-auto rounded-xl border border-[#dce5e1] bg-white text-sm">{rows.map((r) => <li key={r.line} className={`flex items-start gap-2 border-b border-[#edf2f0] px-3 py-2 last:border-0 ${r.error ? "bg-rose-50/60" : ""}`}>
+      <ul className="max-h-80 overflow-y-auto rounded-xl border border-[#cad8e3] bg-white text-sm">{rows.map((r) => <li key={r.line} className={`flex items-start gap-2 border-b border-[#e3ecf2] px-3 py-2 last:border-0 ${r.error ? "bg-rose-50/60" : ""}`}>
         {r.error ? <AlertCircle className="mt-0.5 size-4 shrink-0 text-rose-600" /> : <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-brand" />}
         {r.error ? <span className="min-w-0"><span className="text-slate-500">Fila {r.line}:</span> <span className="font-semibold text-rose-700">{r.error}</span><span className="block truncate font-mono text-xs text-slate-400">{r.raw}</span></span> : <span className="min-w-0">{r.summary}</span>}
       </li>)}</ul>

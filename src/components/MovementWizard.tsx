@@ -115,7 +115,7 @@ export function MovementWizard({ establishmentId, data, responsable, allowAdjust
         <h2 className="text-3xl font-black">¿Cuántos?</h2>
         <div className="flex items-center justify-center gap-4">
           <button onClick={() => set({ cantidad: Math.max(1, draft.cantidad - 1) })} className="grid size-20 place-items-center rounded-full bg-white shadow-sm active:bg-slate-100" aria-label="Uno menos"><Minus className="size-10" /></button>
-          <input value={draft.cantidad || ""} onChange={(e) => set({ cantidad: Math.max(0, Math.floor(Number(e.target.value.replace(/\D/g, "")) || 0)) })} inputMode="numeric" className="h-24 w-32 rounded-2xl border-2 border-[#cedad5] bg-white text-center text-6xl font-black outline-none focus:border-brand" aria-label="Cantidad" />
+          <input value={draft.cantidad || ""} onChange={(e) => set({ cantidad: Math.max(0, Math.floor(Number(e.target.value.replace(/\D/g, "")) || 0)) })} inputMode="numeric" className="h-24 w-32 rounded-2xl border-2 border-[#cad8e3] bg-white text-center text-6xl font-black outline-none focus:border-brand" aria-label="Cantidad" />
           <button onClick={() => set({ cantidad: draft.cantidad + 1 })} className="grid size-20 place-items-center rounded-full bg-white shadow-sm active:bg-slate-100" aria-label="Uno más"><Plus className="size-10" /></button>
         </div>
         {available !== null && draft.cantidad > available ? <p className="rounded-2xl bg-amber-100 px-4 py-3 text-lg font-bold text-amber-900">Atención: en {catName(draft.origin)} figuran {available} {draft.sexo === "H" ? "hembras" : "machos"}. Revisá la cantidad o la categoría.</p> : null}
@@ -146,8 +146,8 @@ export function MovementWizard({ establishmentId, data, responsable, allowAdjust
         <details className="rounded-2xl bg-white p-4">
           <summary className="cursor-pointer text-lg font-bold text-slate-700">Caravana / lote u observación (opcional)</summary>
           <div className="mt-3 space-y-3">
-            <label className="block text-lg font-bold">Caravana, RP o lote<input value={draft.rp} onChange={(e) => set({ rp: e.target.value })} className="mt-1 h-14 w-full rounded-2xl border-2 border-[#cedad5] px-4 text-xl" /></label>
-            <label className="block text-lg font-bold">Observación<textarea value={draft.observacion} onChange={(e) => set({ observacion: e.target.value })} rows={2} className="mt-1 w-full rounded-2xl border-2 border-[#cedad5] p-3 text-lg" /></label>
+            <label className="block text-lg font-bold">Caravana, RP o lote<input value={draft.rp} onChange={(e) => set({ rp: e.target.value })} className="mt-1 h-14 w-full rounded-2xl border-2 border-[#cad8e3] px-4 text-xl" /></label>
+            <label className="block text-lg font-bold">Observación<textarea value={draft.observacion} onChange={(e) => set({ observacion: e.target.value })} rows={2} className="mt-1 w-full rounded-2xl border-2 border-[#cad8e3] p-3 text-lg" /></label>
           </div>
         </details>
         <button onClick={() => void save(false)} disabled={saving} className="flex h-20 w-full items-center justify-center gap-3 rounded-2xl bg-brand text-2xl font-black text-white shadow-lg disabled:opacity-60">{saving ? <RefreshCw className="size-7 animate-spin" /> : <Check className="size-8" />}REGISTRAR</button>

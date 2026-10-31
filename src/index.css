@@ -1,16 +1,20 @@
 @import "tailwindcss";
 
+/* Colores de la app SInPLe Stock original (v3.x). */
 @theme {
-  --color-brand: #0f6b50;
-  --color-brand-dark: #0f4c3a;
-  --color-brand-deep: #103c32;
-  --color-brand-soft: #e8f2ed;
-  --color-brand-accent: #79d7a6;
-  --color-canvas: #f4f7f6;
-  --color-ink: #10231d;
+  --color-brand: #123b5d;
+  --color-brand-dark: #123b5d;
+  --color-brand-deep: #123b5d;
+  --color-brand-soft: #eaf2f8;
+  --color-brand-accent: #a9dcae;
+  --color-brand-blue: #1f5a7a;
+  --color-brand-green: #4f9c57;
+  --color-canvas: #f5f8fa;
+  --color-ink: #17324d;
+  --color-line: #cad8e3;
 }
 
 @layer base {
   html, body { background: var(--color-canvas); color: var(--color-ink); }
-  body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+  body { font-family: Arial, Helvetica, sans-serif; -webkit-tap-highlight-color: transparent; }
 }

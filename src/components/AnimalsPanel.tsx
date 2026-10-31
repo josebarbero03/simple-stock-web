@@ -44,7 +44,7 @@ export function AnimalsPanel({ est, data, userId, responsable, save }: { est: Es
 
   return <div className="space-y-4">
     <div className="flex flex-wrap items-end justify-between gap-3">
-      <div><h1 className="text-2xl font-black">Animales</h1><p className="text-sm text-slate-600">Fichas individuales · no modifican el stock general salvo que lo elijas</p></div>
+      <div><h1 className="text-2xl font-bold text-brand">Animales</h1><p className="text-sm text-slate-600">Fichas individuales · no modifican el stock general salvo que lo elijas</p></div>
       <Button onClick={() => setCreating(true)}><Plus />Nueva ficha</Button>
     </div>
     <Card className="space-y-3 !p-3">
@@ -52,7 +52,7 @@ export function AnimalsPanel({ est, data, userId, responsable, save }: { est: Es
       <div className="flex flex-wrap gap-1.5">{[["active", "Activos"], ["sold", "Vendidos"], ["dead", "Muertos"], ["discarded", "Descartados"], ["todos", "Todos"]].map(([id, label]) => <button key={id} onClick={() => setStatus(id)} className={`rounded-full px-3 py-1.5 text-sm font-bold ${status === id ? "bg-brand text-white" : "bg-slate-100 text-slate-600"}`}>{label} ({(animals ?? []).filter((a) => id === "todos" || a.status === id).length})</button>)}</div>
     </Card>
     {animals === null ? <p className="text-center text-slate-500">Cargando…</p> : !list.length ? <Empty icon={<Beef />} title="Sin fichas" text="Creá fichas para seguir animales de a uno (pesajes, cambios de categoría, venta o muerte)." />
-      : <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">{list.map((a) => <li key={a.id}><button onClick={() => setOpenId(a.id)} className="flex w-full items-center gap-3 rounded-2xl border border-[#dce5e1] bg-white p-3 text-left">
+      : <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">{list.map((a) => <li key={a.id}><button onClick={() => setOpenId(a.id)} className="flex w-full items-center gap-3 rounded-2xl border border-[#cad8e3] bg-white p-3 text-left">
         <span className={`grid size-11 shrink-0 place-items-center rounded-xl text-sm font-black ${a.sexo === "H" ? "bg-rose-50 text-rose-700" : "bg-sky-50 text-sky-700"}`}>{a.sexo}</span>
         <span className="min-w-0 flex-1"><span className="flex items-center gap-2"><span className="truncate text-lg font-black">{a.tag}</span>{a.status !== "active" ? <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-bold text-slate-600">{STATUS_LABEL[a.status] ?? a.status}</span> : null}</span>
           <span className="block truncate text-sm text-slate-500">{catName(a.current_category_id)} · {a.birth_date ? ageText(a.birth_date) : "sin fecha"}{a.lot ? ` · lote ${a.lot}` : ""}</span></span>
@@ -155,11 +155,11 @@ function AnimalDetail({ est, data, animal: a, events, userId, responsable, save,
       </div>
       <datalist id="animal-causes">{movementType ? causesFor(movementType).map((c) => <option key={c} value={c} />) : null}</datalist>
       <Field label="Observación"><Input value={notes} onChange={(e) => setNotes(e.target.value)} /></Field>
-      {affectsStock ? <label className="flex items-start gap-2 text-sm font-semibold"><input type="checkbox" checked={alsoStock} onChange={(e) => setAlsoStock(e.target.checked)} className="mt-0.5 size-4 accent-[#0f6b50]" />Registrar también en el stock general (1 {a.sexo === "H" ? "hembra" : "macho"} de {catName(a.current_category_id)})</label> : null}
+      {affectsStock ? <label className="flex items-start gap-2 text-sm font-semibold"><input type="checkbox" checked={alsoStock} onChange={(e) => setAlsoStock(e.target.checked)} className="mt-0.5 size-4 accent-[#123b5d]" />Registrar también en el stock general (1 {a.sexo === "H" ? "hembra" : "macho"} de {catName(a.current_category_id)})</label> : null}
       <div className="flex justify-end"><Button type="submit" loading={saving}>Registrar</Button></div>
     </form> : null}
     <div className="mt-4"><p className="mb-2 text-sm font-black text-slate-700">Historial</p>
-      {!events.length ? <p className="text-sm text-slate-500">Sin eventos.</p> : <ul className="space-y-1.5">{events.map((e) => <li key={e.id} className="rounded-lg bg-white px-3 py-2 text-sm ring-1 ring-[#edf2f0]">
+      {!events.length ? <p className="text-sm text-slate-500">Sin eventos.</p> : <ul className="space-y-1.5">{events.map((e) => <li key={e.id} className="rounded-lg bg-white px-3 py-2 text-sm ring-1 ring-[#e3ecf2]">
         <b>{formatDate(e.event_date)}</b> · {e.event_type}{e.weight ? ` · ${e.weight} kg` : ""}{e.category_to_id ? ` → ${catName(e.category_to_id)}` : ""}{e.cause ? ` · ${e.cause}` : ""}{e.movement_id ? <span className="ml-1 text-xs font-bold text-brand">(en el stock)</span> : null}
         {e.notes ? <span className="block text-slate-600">{e.notes}</span> : null}{e.responsible ? <span className="block text-xs text-slate-400">{e.responsible}</span> : null}
       </li>)}</ul>}

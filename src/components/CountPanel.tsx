@@ -41,13 +41,13 @@ export function CountPanel({ est, data, responsable, save }: { est: Establishmen
   }
 
   return <div className="space-y-4">
-    <div><h1 className="text-2xl font-black">Conteo mensual</h1><p className="text-sm text-slate-600">Cargá lo que contaste en el campo. La app compara con el sistema y registra los ajustes necesarios.</p></div>
+    <div><h1 className="text-2xl font-bold text-brand">Conteo físico mensual</h1><p className="text-sm text-slate-600">Cargá lo que contaste en el campo. La app compara con el sistema y registra los ajustes necesarios.</p></div>
     <Card className="flex flex-wrap items-center gap-3 !p-3">
       <label className="text-sm font-bold">Fecha del conteo</label>
       <Input type="date" value={date} min={est.inventory_date} max={today()} onChange={(e) => e.target.value && setDate(e.target.value)} className="!mt-0 w-auto" aria-label="Fecha del conteo" />
       <button onClick={() => setCounts(Object.fromEntries(cats.map((c) => [c.id, { H: String(system(c.id, "H")), M: String(system(c.id, "M")) }])))} className="text-sm font-bold text-brand">Completar con lo del sistema</button>
     </Card>
-    <ul className="space-y-2">{cats.map((c) => <li key={c.id} className="rounded-2xl border border-[#dce5e1] bg-white p-3">
+    <ul className="space-y-2">{cats.map((c) => <li key={c.id} className="rounded-2xl border border-[#cad8e3] bg-white p-3">
       <p className="font-black">{c.name}</p>
       <div className="mt-2 grid grid-cols-[70px_1fr_1fr_1fr] items-center gap-2 text-sm">
         <span /><span className="font-bold text-slate-500">Sistema</span><span className="font-bold text-slate-500">Contado</span><span className="font-bold text-slate-500">Diferencia</span>
@@ -59,7 +59,7 @@ export function CountPanel({ est, data, responsable, save }: { est: Establishmen
         ]; })}
       </div>
     </li>)}</ul>
-    <div className="sticky bottom-20 rounded-2xl border border-[#dce5e1] bg-white p-3 shadow-lg sm:bottom-4">
+    <div className="sticky bottom-4 rounded-2xl border border-[#cad8e3] bg-white p-3 shadow-lg sm:bottom-4">
       <p className="mb-2 text-sm text-slate-600">{!counted ? "Cargá al menos una categoría." : changes.length ? <><strong>{changes.length}</strong> diferencias: se registran como “Ingreso ajuste” o “Egreso ajuste” con causa “Conteo físico / cierre mensual”.</> : "El conteo coincide con el sistema."}</p>
       <Button onClick={() => void apply()} loading={saving} disabled={!changes.length} className="w-full"><ClipboardCheck />Registrar ajustes</Button>
     </div>

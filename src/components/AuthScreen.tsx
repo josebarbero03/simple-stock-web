@@ -54,7 +54,7 @@ export function AuthScreen() {
     </section>
 
     <section className="flex items-center justify-center p-4 sm:p-10">
-      <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-[0_18px_60px_rgba(15,76,58,.12)] sm:p-9">
+      <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-[0_18px_60px_rgba(18,59,93,.12)] sm:p-9">
         <div className="mb-7 lg:hidden"><Brand /></div>
         {sent ? <div className="text-center">
           <span className="mx-auto grid size-14 place-items-center rounded-full bg-emerald-100 text-emerald-700"><Mail className="size-7" /></span>

@@ -41,7 +41,7 @@ export function TeamPanel({ est, userId, onUseAsOperator }: { est: Establishment
   }
 
   return <div className="space-y-4">
-    <div><h1 className="text-2xl font-black">Equipo</h1><p className="text-sm text-slate-600">Quiénes trabajan en {est.name} y qué pueden hacer</p></div>
+    <div><h1 className="text-2xl font-bold text-brand">Integrantes</h1><p className="text-sm text-slate-600">Quiénes trabajan en {est.name} y qué pueden hacer</p></div>
     <Card>
       <form onSubmit={add} className="space-y-3">
         <p className="flex items-center gap-2 font-black"><UserPlus className="size-5 text-brand" />Sumar persona</p>
@@ -53,7 +53,7 @@ export function TeamPanel({ est, userId, onUseAsOperator }: { est: Establishment
         <Button type="submit" loading={saving} className="w-full sm:w-auto">Agregar</Button>
       </form>
     </Card>
-    {members === null ? <p className="text-center text-slate-500">Cargando…</p> : <ul className="space-y-2">{members.map((m) => <li key={m.user_id} className="flex flex-wrap items-center gap-3 rounded-2xl border border-[#dce5e1] bg-white p-3">
+    {members === null ? <p className="text-center text-slate-500">Cargando…</p> : <ul className="space-y-2">{members.map((m) => <li key={m.user_id} className="flex flex-wrap items-center gap-3 rounded-2xl border border-[#cad8e3] bg-white p-3">
       <span className="grid size-10 shrink-0 place-items-center rounded-full bg-brand-soft font-black text-brand-dark">{(m.display_name || m.email || "?").charAt(0).toUpperCase()}</span>
       <div className="min-w-0 flex-1"><p className="truncate font-black">{m.display_name || m.email}{m.user_id === userId ? <span className="font-semibold text-slate-400"> (vos)</span> : null}</p><p className="truncate text-sm text-slate-500">{m.email}</p></div>
       {m.role === "owner" || m.user_id === userId ? <span className="rounded-full bg-brand-deep px-3 py-1 text-xs font-bold text-white">{ROLE_LABEL[m.role]}</span> : <>

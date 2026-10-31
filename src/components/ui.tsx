@@ -4,7 +4,7 @@ import { CheckCircle2, LoaderCircle, X, XCircle } from "lucide-react";
 type Variant = "primary" | "secondary" | "ghost" | "danger";
 const variants: Record<Variant, string> = {
   primary: "bg-brand text-white hover:bg-brand-dark",
-  secondary: "bg-brand-soft text-brand-dark hover:bg-[#dbeae3]",
+  secondary: "bg-brand-soft text-brand-dark hover:bg-[#dbe7f1]",
   ghost: "text-slate-600 hover:bg-slate-100",
   danger: "bg-rose-50 text-rose-700 hover:bg-rose-100",
 };
@@ -15,7 +15,7 @@ export function Button({ variant = "primary", loading, className = "", children,
   </button>;
 }
 
-const control = "mt-1.5 h-11 w-full rounded-xl border border-[#cedad5] bg-white px-3 text-[15px] outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20 disabled:bg-slate-50";
+const control = "mt-1.5 h-11 w-full rounded-xl border border-[#cad8e3] bg-white px-3 text-[15px] outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20 disabled:bg-slate-50";
 
 export function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
   return <label className="block text-sm font-semibold text-slate-700">{label}{children}{hint ? <span className="mt-1 block text-xs font-normal text-slate-500">{hint}</span> : null}</label>;
@@ -25,7 +25,7 @@ export function Select(props: SelectHTMLAttributes<HTMLSelectElement>) { return 
 export function Textarea(props: TextareaHTMLAttributes<HTMLTextAreaElement>) { return <textarea {...props} className={`${control} h-auto min-h-20 py-2 ${props.className ?? ""}`} />; }
 
 export function Card({ className = "", children }: { className?: string; children: ReactNode }) {
-  return <section className={`rounded-2xl border border-[#dce5e1] bg-white p-4 shadow-[0_6px_24px_rgba(15,76,58,.06)] sm:p-5 ${className}`}>{children}</section>;
+  return <section className={`rounded-2xl border border-[#cad8e3] bg-white p-4 shadow-[0_6px_24px_rgba(18,59,93,.06)] sm:p-5 ${className}`}>{children}</section>;
 }
 
 export function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
@@ -43,7 +43,7 @@ export function Modal({ title, onClose, children }: { title: string; onClose: ()
 }
 
 export function Empty({ icon, title, text, action }: { icon: ReactNode; title: string; text: string; action?: ReactNode }) {
-  return <div className="rounded-2xl border border-dashed border-[#cedad5] bg-white/60 px-5 py-10 text-center">
+  return <div className="rounded-2xl border border-dashed border-[#cad8e3] bg-white/60 px-5 py-10 text-center">
     <div className="mx-auto grid size-12 place-items-center rounded-full bg-brand-soft text-brand [&_svg]:size-6">{icon}</div>
     <p className="mt-4 font-black">{title}</p><p className="mx-auto mt-1 max-w-sm text-sm text-slate-600">{text}</p>
     {action ? <div className="mt-5">{action}</div> : null}

@@ -10,7 +10,7 @@ import { Button, Card, Field, Input, Select, toast } from "./ui";
 
 export function SettingsPanel({ est, data, ageRanges, role, onSaved }: { est: Establishment; data: StockData; ageRanges: AgeRange[]; role: Role; onSaved: () => Promise<void> }) {
   return <div className="space-y-4">
-    <div><h1 className="text-2xl font-black">Configuración</h1><p className="text-sm text-slate-600">{est.name}</p></div>
+    <div><h1 className="text-2xl font-bold text-brand">Configuración</h1><p className="text-sm text-slate-600">{est.name}</p></div>
     <EstablishmentForm est={est} onSaved={onSaved} />
     <CategoriesForm est={est} data={data} onSaved={onSaved} />
     <InitialStockForm est={est} data={data} onSaved={onSaved} />
@@ -75,14 +75,14 @@ function CategoriesForm({ est, data, onSaved }: { est: Establishment; data: Stoc
 
   return <Card className="space-y-3">
     <div><p className="font-black">Categorías</p><p className="text-sm text-slate-500">El grupo se usa para los indicadores (vacas en ordeñe, secas, reposición). Una categoría inactiva no aparece para cargar movimientos, pero conserva su historia.</p></div>
-    <ul className="space-y-2">{rows.map((c, i) => <li key={c.id} className={`grid grid-cols-[auto_1fr] gap-2 rounded-xl border border-[#edf2f0] p-2 sm:grid-cols-[auto_1fr_200px_auto] sm:items-center ${c.active ? "" : "opacity-60"}`}>
+    <ul className="space-y-2">{rows.map((c, i) => <li key={c.id} className={`grid grid-cols-[auto_1fr] gap-2 rounded-xl border border-[#e3ecf2] p-2 sm:grid-cols-[auto_1fr_200px_auto] sm:items-center ${c.active ? "" : "opacity-60"}`}>
       <div className="flex flex-col"><button onClick={() => move(i, -1)} className="grid size-7 place-items-center text-slate-400" aria-label={`Subir ${c.name}`}><ArrowUp className="size-4" /></button><button onClick={() => move(i, 1)} className="grid size-7 place-items-center text-slate-400" aria-label={`Bajar ${c.name}`}><ArrowDown className="size-4" /></button></div>
       <Input value={c.name} onChange={(e) => set(c.id, { name: e.target.value })} className="!mt-0" aria-label={`Nombre de ${c.name}`} />
       <Select value={c.technical_group ?? ""} onChange={(e) => set(c.id, { technical_group: e.target.value || null })} className="col-span-2 !mt-0 sm:col-span-1" aria-label={`Grupo de ${c.name}`}><option value="">Sin grupo</option>{GROUPS.map((g) => <option key={g} value={g}>{GROUP_LABEL[g]}</option>)}</Select>
-      <label className="col-span-2 flex items-center gap-2 text-sm font-semibold sm:col-span-1"><input type="checkbox" checked={c.active} onChange={(e) => set(c.id, { active: e.target.checked })} className="size-4 accent-[#0f6b50]" />Activa</label>
+      <label className="col-span-2 flex items-center gap-2 text-sm font-semibold sm:col-span-1"><input type="checkbox" checked={c.active} onChange={(e) => set(c.id, { active: e.target.checked })} className="size-4 accent-[#123b5d]" />Activa</label>
     </li>)}</ul>
     <div className="flex justify-end"><Button onClick={() => void save()} loading={saving}>Guardar categorías</Button></div>
-    <div className="grid grid-cols-1 gap-2 border-t border-[#edf2f0] pt-3 sm:grid-cols-[1fr_200px_auto]">
+    <div className="grid grid-cols-1 gap-2 border-t border-[#e3ecf2] pt-3 sm:grid-cols-[1fr_200px_auto]">
       <Input value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="Nueva categoría" className="!mt-0" aria-label="Nueva categoría" />
       <Select value={newGroup} onChange={(e) => setNewGroup(e.target.value)} className="!mt-0" aria-label="Grupo de la nueva categoría"><option value="">Sin grupo</option>{GROUPS.map((g) => <option key={g} value={g}>{GROUP_LABEL[g]}</option>)}</Select>
       <Button variant="secondary" onClick={() => void add()} disabled={!newName.trim() || saving}><Plus />Agregar</Button>
